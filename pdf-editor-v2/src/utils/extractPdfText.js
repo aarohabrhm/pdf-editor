@@ -10,12 +10,12 @@ export async function extractPdfText(file) {
         const pdf = await getDocument({ data: typedArray }).promise;
 
         let fullText = '';
+
         for (let i = 1; i <= pdf.numPages; i++) {
           const page = await pdf.getPage(i);
           const content = await page.getTextContent();
-          const strings = content.items.map((item) => item.str).join(' ');
-          fullText += `Page ${i}:
-${strings}\n\n`;
+          const pageText = content.items.map(item => item.str).join(' ');
+          fullText += pageText + '\n\n';
         }
 
         resolve(fullText);
@@ -24,7 +24,6 @@ ${strings}\n\n`;
       }
     };
 
-    reader.onerror = () => reject(reader.error);
     reader.readAsArrayBuffer(file);
   });
 }
